@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personality Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        #intro {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        #question {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        #countdown {
+            color: yellow;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        #result {
+            font-size: 22px;
+            margin-top: 30px;
+            display: none;
+            transform: scale(0);
+            transition: transform 0.5s ease;
+        }
+        button {
+            background-color: #444;
+            color: #e0e0e0;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #666;
+        }
+        footer {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: #b3b3b3;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="quizContainer">
+        <div id="intro">Welcome to the Personality Quiz! Answer a series of questions to discover your personality type.</div>
+        <div id="question"></div>
+        <div>
+            <button id="startButton" onclick="startQuiz()">Start</button>
+            <button id="yesButton" style="display: none;" onclick="answerQuestion('yes')">Yes</button>
+            <button id="noButton" style="display: none;" onclick="answerQuestion('no')">No</button>
+        </div>
+        <div id="result"></div>
+    </div>
+    <footer>Website created by FSXstealth</footer>
+    <script>
+        let questions = [
+            "Do you enjoy trying new foods?",
+            "Are you usually the one to start conversations?",
+            "Do you prefer to stay organized and plan your day?",
+            "Is it easy for you to share your feelings with others?",
+            "Do you feel fulfilled when helping others?",
+            "Are you often lost in thought?",
+            "Do you like taking on challenges?",
+            "Are you more logical than emotional?",
+            "Do you find it difficult to let go of past grievances?",
+            "Do you appreciate artistic expressions (music, art, etc.)?",
+            "Do you often seek out the company of friends?",
+            "Are you inclined to avoid conflict?",
+            "Do you prefer routine over spontaneity?",
+            "Is adventure important in your life?",
+            "Do you believe in setting long-term goals?",
+            "Do you enjoy spending time in nature?",
+            "Are you more of a listener than a talker?",
+            "Do you often feel overwhelmed by emotions?",
+            "Do you enjoy solving puzzles or brainteasers?",
+            "Are you comfortable making decisions quickly?",
+            "Do you value honesty above all in relationships?",
+            "Do you often daydream?",
+            "Are you motivated by personal achievements?",
+            "Do you find it easy to adapt to new situations?",
+            "Are you inclined to trust others easily?",
+            "Do you like to explore new places?",
+            "Do you often reflect on your actions and choices?",
+            "Are you driven by a desire for success?",
+            "Do you prefer watching movies alone rather than with others?",
+            "Do you believe in fate or destiny?"
+        ];
+
+        let yesCount = 0;
+        let noCount = 0;
+        let currentQuestionIndex = 0;
+        const totalQuestions = questions.length;
+
+        function startQuiz() {
+            document.getElementById('intro').style.display = 'none';
+            document.getElementById('startButton').style.display = 'none';
+            document.getElementById('yesButton').style.display = 'inline';
+            document.getElementById('noButton').style.display = 'inline';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const questionElement = document.getElementById('question');
+            questionElement.innerText = questions[currentQuestionIndex];
+            fadeIn(questionElement);
+        }
+
+        function answerQuestion(answer) {
+            const questionElement = document.getElementById('question');
+            fadeOut(questionElement);
+
+            if (answer === 'yes') {
+                yesCount++;
+            } else {
+                noCount++;
+            }
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < totalQuestions) {
+                setTimeout(() => {
+                    showQuestion();
+                }, 500); // Delay to allow fade out effect
+            } else {
+                displayPersonality();
+            }
+        }
+
+        function displayPersonality() {
+            const questionElement = document.getElementById('question');
+            const yesButton = document.getElementById('yesButton');
+            const noButton = document.getElementById('noButton');
+
+            fadeOut(questionElement);
+            yesButton.style.display = 'none';
+            noButton.style.display = 'none';
+
+            setTimeout(() => {
+                evaluatePersonality();
+            }, 500); // Small delay before showing personality result
+        }
+
+        function evaluatePersonality() {
+            let result;
+            let personalityType = '';
+
+            // Determine personality type based on scores
+            if (yesCount > noCount + 8) {
+                personalityType = "Adventurer";
+                result = "You are a free spirit who embraces life with open arms. New experiences excite you, and you're always seeking out adventure and exploration.";
+            } else if (yesCount > noCount + 4) {
+                personalityType = "Optimist";
+                result = "You have a positive outlook on life. You see the glass half full and inspire those around you with your enthusiasm and energy.";
+            } else if (noCount > yesCount + 8) {
+                personalityType = "Cautious Realist";
+                result = "You prefer to assess situations carefully before jumping in. Your cautious nature allows you to make well-informed decisions.";
+            } else if (noCount > yesCount + 4) {
+                personalityType = "Pragmatist";
+                result = "You value practicality and logic. You focus on what works best in the real world and are not easily swayed by emotions.";
+            } else {
+                personalityType = "Balanced Thinker";
+                result = "You possess a unique blend of traits, balancing logic and emotion. You adapt well to various situations, making you versatile in your approach.";
+            }
+
+            // Adding nuances based on specific combinations of scores
+            if (yesCount > (totalQuestions / 2) && noCount < (totalQuestions / 4)) {
+                result += " You are likely to inspire and lead others, often serving as a beacon of positivity.";
+            } else if (noCount > (totalQuestions / 2) && yesCount < (totalQuestions / 4)) {
+                result += " Your grounded perspective is often sought after by friends when they need advice or guidance.";
+            }
+
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML = `<strong>${personalityType}</strong>: ${result}`;
+            resultElement.style.display = 'block';
+            resultElement.style.transform = 'scale(1)';
+            fadeIn(resultElement);
+        }
+
+        function fadeIn(element) {
+            element.style.opacity = 0;
+            element.style.transition = "opacity 0.5s, transform 0.5s";
+            element.style.opacity = 1;
+            element.style.transform = 'scale(1)';
+        }
+
+        function fadeOut(element) {
+            element.style.opacity = 1;
+            element.style.transition = "opacity 0.5s ease";
+            element.style.opacity = 0;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('quizContainer');
+            container.style.opacity = 1; // Fade in the entire container
+        });
+    </script>
+</body>
+</html>
